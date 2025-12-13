@@ -7,6 +7,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Health
+app.get('/', (req, res) => res.send('Backend OK'));
+
 // Rutas
 const tasksRouter = require("./routes/tasks");
 app.use("/api/tasks", tasksRouter);
