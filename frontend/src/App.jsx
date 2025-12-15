@@ -6,19 +6,13 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
 
-  // Cargar tareas
-  const loadTasks = async () => {
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      setTasks(data);
-    } catch (err) {
-      console.error("Error cargando tareas", err);
-    }
-  };
+  async function fetchTasks() {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    setTasks(data);
+  }
 
-  // Agregar tarea
-  const addTask = async (e) => {
+  async function addTask(e) {
     e.preventDefault();
     if (!title.trim()) return;
 
@@ -29,40 +23,38 @@ function App() {
     });
 
     setTitle("");
-    loadTasks();
-  };
+    fetchTasks();
+  }
 
-  // Eliminar tarea
-  const deleteTask = async (id) => {
+  async function deleteTask(id) {
     await fetch(`${API_URL}/${id}`, {
       method: "DELETE",
     });
-    loadTasks();
-  };
+    fetchTasks();
+  }
 
   useEffect(() => {
-    loadTasks();
+    fetchTasks();
   }, []);
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+    <div style={{ padding: 20 }}>
       <h1>Todo List</h1>
 
       <form onSubmit={addTask}>
         <input
-          type="text"
-          placeholder="Nueva tarea"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          placeholder="Nueva tarea"
         />
-        <button type="submit">Agregar</button>
+        <button>Agregar</button>
       </form>
 
       <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            {task.title}
-            <button onClick={() => deleteTask(task.id)}>❌</button>
+        {tasks.map((t) => (
+          <li key={t.id}>
+            {t.title}
+            <button onClick={() => deleteTask(t.id)}>❌</button>
           </li>
         ))}
       </ul>
