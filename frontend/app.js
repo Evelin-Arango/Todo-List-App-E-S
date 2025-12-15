@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/tasks";
+const API_URL = "todo-list-app-e-s-production.up.railway.app";
 
 // Cargar tareas cuando inicia la página
 document.addEventListener("DOMContentLoaded", loadTasks);
