@@ -1,8 +1,8 @@
-// src/api.js
 const API_URL = "https://todo-list-app-e-s-production.up.railway.app/api/tasks";
 
 export async function getTasks() {
   const res = await fetch(API_URL);
+  if (!res.ok) throw new Error("Error cargando tareas");
   return res.json();
 }
 
@@ -12,15 +12,17 @@ export async function createTask(title) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title }),
   });
+  if (!res.ok) throw new Error("Error creando tarea");
   return res.json();
 }
 
-export async function toggleTask(id, completed) {
+export async function updateTask(id, data) {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ completed }),
+    body: JSON.stringify(data),
   });
+  if (!res.ok) throw new Error("Error actualizando tarea");
   return res.json();
 }
 
@@ -28,5 +30,6 @@ export async function deleteTask(id) {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
   });
+  if (!res.ok) throw new Error("Error eliminando tarea");
   return res.json();
 }

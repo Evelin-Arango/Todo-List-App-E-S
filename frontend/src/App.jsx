@@ -1,28 +1,47 @@
-import { useEffect, useState } from "react";
-import { getTasks, createTask } from "./api";
+import { useState, useEffect } from "react";
+
+const API_URL = "https://todo-list-app-e-s-production.up.railway.app/api/tasks";
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
 
   // Cargar tareas
-  const fetchTasks = async () => {
-    const data = await getTasks();
-    setTasks(data);
+  const loadTasks = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      setTasks(data);
+    } catch (err) {
+      console.error("Error cargando tareas", err);
+    }
   };
 
-  // Crear tarea
+  // Agregar tarea
   const addTask = async (e) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    await createTask(title);
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    });
+
     setTitle("");
-    fetchTasks();
+    loadTasks();
+  };
+
+  // Eliminar tarea
+  const deleteTask = async (id) => {
+    await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+    loadTasks();
   };
 
   useEffect(() => {
-    fetchTasks();
+    loadTasks();
   }, []);
 
   return (
@@ -40,8 +59,11 @@ function App() {
       </form>
 
       <ul>
-        {tasks.map((t) => (
-          <li key={t.id}>{t.title}</li>
+        {tasks.map((task) => (
+          <li key={task.id}>
+            {task.title}
+            <button onClick={() => deleteTask(task.id)}>❌</button>
+          </li>
         ))}
       </ul>
     </div>
