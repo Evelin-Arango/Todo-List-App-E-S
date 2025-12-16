@@ -1,63 +1,63 @@
-// Usa la variable de entorno VITE_API_URL (Render) si está definida (producción/despliegue)
-// Si no está definida (desarrollo local), usa la URL de localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/tasks';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-// Verificación y log para detectar si la variable de entorno no está definida correctamente
-if (!import.meta.env.VITE_API_URL) {
-  console.warn('¡Atención! La variable de entorno VITE_API_URL no está definida. Usando URL local (http://localhost:5000)');
+if (!API_BASE_URL) {
+  console.error("❌ VITE_API_URL no está definida");
 }
 
-// 1. OBTENER TAREAS
+// GET
 export const getTasks = async () => {
-  const response = await fetch(API_BASE_URL);
-  if (!response.ok) {
-    throw new Error('No se pudieron obtener las tareas.');
+  const res = await fetch(API_BASE_URL);
+  if (!res.ok) {
+    throw new Error(`Error ${res.status} al obtener tareas`);
   }
-  return response.json(); 
+  return res.json();
 };
 
-// 2. AGREGAR TAREA
+// POST
 export const addTask = async (title) => {
-  const response = await fetch(API_BASE_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, completed: false }),
+  const res = await fetch(API_BASE_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ title, completed: false })
   });
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => ({ message: response.statusText }));
-    throw new Error(`Fallo al agregar la tarea: ${errorBody.message}`);
+
+  if (!res.ok) {
+    throw new Error(`Error ${res.status} al crear tarea`);
   }
-  return response.json();
+
+  return res.json();
 };
 
-// 3. ACTUALIZAR TAREA (Usado para editar título y marcar como completada)
-export const updateTask = async (id, updateData) => {
-  if (!id) throw new Error("ID de tarea no proporcionado para la actualización.");
-  
-  const response = await fetch(`${API_BASE_URL}/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updateData),
+// PUT
+export const updateTask = async (id, data) => {
+  if (!id) throw new Error("ID no válido");
+
+  const res = await fetch(`${API_BASE_URL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
   });
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => ({ message: response.statusText }));
-    throw new Error(`Fallo al actualizar la tarea ${id}: ${errorBody.message}`);
+
+  if (!res.ok) {
+    throw new Error(`Error ${res.status} al actualizar tarea`);
   }
-  return response.json();
+
+  return res.json();
 };
 
-// 4. ELIMINAR TAREA
+// DELETE
 export const deleteTask = async (id) => {
-  if (!id) throw new Error("ID de tarea no proporcionado para la eliminación.");
+  if (!id) throw new Error("ID no válido");
 
-  const response = await fetch(`${API_BASE_URL}/${id}`, {
-    method: 'DELETE',
+  const res = await fetch(`${API_BASE_URL}/${id}`, {
+    method: "DELETE"
   });
-  // El backend de Render/Express debería devolver 204 No Content
-  if (response.status === 204) {
-      return; 
-  }
-  if (!response.ok) {
-    throw new Error(`Fallo al eliminar la tarea ${id}: ${response.statusText}`);
+
+  if (!res.ok && res.status !== 204) {
+    throw new Error(`Error ${res.status} al eliminar tarea`);
   }
 };
