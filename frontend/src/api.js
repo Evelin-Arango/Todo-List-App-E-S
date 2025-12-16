@@ -1,8 +1,11 @@
-// frontend/src/api.js
-
 // Usa la variable de entorno VITE_API_URL (Render) si está definida (producción/despliegue)
 // Si no está definida (desarrollo local), usa la URL de localhost
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/tasks';
+
+// Verificación y log para detectar si la variable de entorno no está definida correctamente
+if (!import.meta.env.VITE_API_URL) {
+  console.warn('¡Atención! La variable de entorno VITE_API_URL no está definida. Usando URL local (http://localhost:5000)');
+}
 
 // 1. OBTENER TAREAS
 export const getTasks = async () => {
