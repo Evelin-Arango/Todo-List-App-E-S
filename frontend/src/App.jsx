@@ -1,7 +1,6 @@
 // frontend/src/App.jsx
 
 import React, { useState, useEffect } from 'react';
-// Asumimos que estas funciones en ./api están correctas
 import { getTasks, addTask, updateTask, deleteTask } from './api'; 
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
   const fetchTasks = async () => {
     try {
       const data = await getTasks();
-      // Aseguramos que la lista se muestre solo si hay datos válidos
       if (Array.isArray(data)) {
          setTasks(data);
       }
@@ -65,8 +63,6 @@ function App() {
     if (!editingTitle.trim()) return;
 
     try {
-      // Nota: Aquí solo actualizas el título. Necesitas enviar el estado 'completed' 
-      // actual para que no se pierda en la BD (lo haremos en la próxima revisión si es necesario)
       const updatedTask = await updateTask(id, { title: editingTitle }); 
       
       setTasks(tasks.map(task => 
@@ -83,10 +79,8 @@ function App() {
   // 6. Manejar el cambio de estado (Completado/Pendiente)
   const handleToggleComplete = async (task) => {
     try {
-      // Llama a la API para actualizar el estado completed
       const updatedTask = await updateTask(task._id, { completed: !task.completed });
       
-      // Mapea el estado local para actualizar el estado (completed)
       setTasks(tasks.map(t => 
         t._id === task._id ? updatedTask : t
       ));
@@ -99,7 +93,7 @@ function App() {
   return (
     <div className="page">
       <h1>Lista de Tareas</h1>
-      {/* SE ELIMINA LA LÍNEA: <div className="muted">Conexión: <span>backend en localhost:5000</span></div> */}
+      {/* Se elimina la referencia a localhost */}
 
       {/* --- FORMULARIO PARA AGREGAR TAREA --- */}
       <div className="input-box">
@@ -112,14 +106,13 @@ function App() {
           onKeyPress={(e) => e.key === 'Enter' && handleAddTask()}
         />
         <button onClick={handleAddTask}>Agregar</button>
-        {/* SE ELIMINA EL BOTÓN: Ver BD */}
+        {/* Se elimina el botón "Ver BD" */}
       </div>
       
       {/* --- LISTA DE TAREAS --- */}
       <div className="task-list">
         <ul id="taskList">
           {tasks.map(task => (
-            // Aplica la clase 'completed' para estilos CSS (tachado/opacidad)
             <li key={task._id} className={task.completed ? 'completed' : ''}>
               {editingId === task._id ? (
                 // MODO EDICIÓN ACTIVO
@@ -139,16 +132,13 @@ function App() {
                 // MODO VISTA NORMAL
                 <div className="task-view-mode">
                   <span 
-                    // Al hacer clic, cambia el estado completado/pendiente
                     onClick={() => handleToggleComplete(task)}
                     className="task-title"
                   >
                     {task.title}
                   </span>
                   <div className="task-actions">
-                    {/* Botón que llama a startEdit y activa el modo edición */}
                     <button onClick={() => startEdit(task)} className="edit-btn">Editar</button>
-                    {/* Botón que llama a handleDeleteTask para eliminar */}
                     <button onClick={() => handleDeleteTask(task._id)} className="delete-btn">Eliminar</button>
                   </div>
                 </div>

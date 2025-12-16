@@ -1,6 +1,7 @@
 // frontend/src/api.js
 
-// CLAVE: Usa la variable de entorno (Vercel) o localhost (desarrollo)
+// Usa la variable de entorno VITE_API_URL (Render) si está definida (producción/despliegue)
+// Si no está definida (desarrollo local), usa la URL de localhost
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/tasks';
 
 // 1. OBTENER TAREAS
@@ -26,7 +27,7 @@ export const addTask = async (title) => {
   return response.json();
 };
 
-// 3. ACTUALIZAR TAREA 
+// 3. ACTUALIZAR TAREA (Usado para editar título y marcar como completada)
 export const updateTask = async (id, updateData) => {
   if (!id) throw new Error("ID de tarea no proporcionado para la actualización.");
   
@@ -49,6 +50,7 @@ export const deleteTask = async (id) => {
   const response = await fetch(`${API_BASE_URL}/${id}`, {
     method: 'DELETE',
   });
+  // El backend de Render/Express debería devolver 204 No Content
   if (response.status === 204) {
       return; 
   }
