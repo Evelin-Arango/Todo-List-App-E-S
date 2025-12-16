@@ -1,68 +1,223 @@
+/* ========================================================= */
+/* 1. Reset y Estilos Base (Body Centrado) */
+/* ========================================================= */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --color-dark: #1e1e2f;          /* Fondo oscuro principal */
+  --color-primary: #5d5dff;       /* Azul/Púrpura principal (Botón Agregar) */
+  --color-accent: #ff79c6;        /* Rosa de acento (Animaciones, Hover) */
+  --color-text: #f8f8f2;          /* Texto claro */
+  --color-success: #50fa7b;       /* Verde (Guardar) */
+  --color-danger: #ff5555;        /* Rojo (Eliminar) */
+  --color-warning: #f1fa8c;       /* Amarillo (Editar) */
+  --color-card: #282a36;          /* Fondo de tarjetas (Tareas) */
+  --color-shadow: #13131c;        /* Sombra sutil */
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  background-color: var(--color-dark);
+  color: var(--color-text);
   min-height: 100vh;
+  display: flex;
+  justify-content: center; /* Centrado horizontal */
+  align-items: flex-start; /* Alineado al inicio (top) */
+  padding-top: 50px;
+}
+
+/* ========================================================= */
+/* 2. Estructura Principal */
+/* ========================================================= */
+
+#root {
+  width: 100%;
+  display: flex; /* Para centrar el .page dentro del root si fuera necesario */
+  justify-content: center;
+}
+
+.page {
+  width: 100%;
+  max-width: 700px; /* Ancho máximo centrado */
+  padding: 30px;
+  border-radius: 12px;
+  background-color: var(--color-dark);
+  box-shadow: 0 10px 30px var(--color-shadow);
+  transition: all 0.3s ease;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--color-primary);
+  text-shadow: 0 0 10px rgba(93, 93, 255, 0.5);
 }
 
-button {
+.muted {
+  text-align: center;
+  color: #999;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+/* ========================================================= */
+/* 3. Input y Botones de Acción Global */
+/* ========================================================= */
+
+.input-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+#taskInput, .task-edit-mode input {
+  flex-grow: 1;
+  padding: 12px 15px;
+  border: 2px solid var(--color-card);
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  background-color: var(--color-card);
+  color: var(--color-text);
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+#taskInput:focus, .task-edit-mode input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 8px rgba(255, 121, 198, 0.4);
+}
+
+.input-box button, .task-view-mode button, .task-edit-mode button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s, opacity 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.input-box button:hover, .task-view-mode button:hover, .task-edit-mode button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.input-box button:active, .task-view-mode button:active, .task-edit-mode button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.input-box button:first-of-type { /* Botón Agregar */
+  background-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.input-box button:last-of-type { /* Botón Ver BD */
+  background-color: var(--color-card);
+  color: var(--color-text);
+}
+
+/* ========================================================= */
+/* 4. Lista de Tareas y Animaciones */
+/* ========================================================= */
+
+.task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-list li {
+  background-color: var(--color-card);
+  margin-bottom: 12px;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s, box-shadow 0.3s, opacity 0.5s ease;
+  transform-origin: center;
+}
+
+.task-list li:hover {
+  box-shadow: 0 5px 15px rgba(93, 93, 255, 0.2);
+}
+
+/* Animación de entrada de tareas (al agregarse) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-list li:not(.completed) {
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Tarea Completada */
+.completed {
+  opacity: 0.6;
+}
+
+.completed .task-title {
+  text-decoration: line-through;
+  color: #a0a0b8;
+}
+
+/* ========================================================= */
+/* 5. Contenido de la Tarea (Modo Vista y Edición) */
+/* ========================================================= */
+
+.task-view-mode, .task-edit-mode {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.task-title {
+  flex-grow: 1;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-right: 20px;
+  transition: color 0.2s; 
+}
+
+.task-title:hover {
+    color: var(--color-accent);
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Botones de Acción Específicos */
+.edit-btn {
+  background-color: var(--color-warning); 
+  color: var(--color-dark);
+}
+
+.delete-btn {
+  background-color: var(--color-danger);
+  color: var(--color-text);
+}
+
+.save-btn {
+  background-color: var(--color-success);
+  color: var(--color-dark);
+}
+
+.cancel-btn {
+  background-color: var(--color-card);
+  color: var(--color-text);
+  border: 1px solid #444;
+}
+
+/* Mensaje de lista vacía */
+.empty-message {
+  text-align: center;
+  color: #999;
+  padding: 30px;
+  font-style: italic;
 }

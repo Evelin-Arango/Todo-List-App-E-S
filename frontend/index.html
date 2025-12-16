@@ -3,26 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Lista de Tareas</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+  </head>
 <body>
-  <div class="page">
-    <div class="header-row">
-      <h1>Lista de Tareas</h1>
-      <div class="muted">Conexión: <span class="muted">backend en localhost:5000</span></div>
-    </div>
+  
+  <div id="root"></div>
 
-    <div class="input-box">
-      <input id="taskInput" type="text" placeholder="Agregar nueva tarea">
-      <button onclick="addTask()">Agregar</button>
-      <button class="view-db" id="viewDbBtn" onclick="window.open('http://localhost:5000/api/tasks/db/html','_blank')">Ver BD</button>
-    </div>
-
-    <div class="task-list">
-      <ul id="taskList"></ul>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
